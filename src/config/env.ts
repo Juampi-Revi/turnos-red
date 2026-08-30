@@ -16,7 +16,7 @@ function requireEnv(name: string): string {
   return value.trim();
 }
 
-const portRaw = process.env.PORT ?? '3000';
+const portRaw = process.env.PORT ?? '4000';
 const port = Number(portRaw);
 
 if (!Number.isInteger(port) || port <= 0) {

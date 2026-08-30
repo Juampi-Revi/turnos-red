@@ -32,14 +32,14 @@ cp .env.example .env
 npm run dev
 ```
 
-Servidor: `http://localhost:3000`  
-Monitor Socket.IO: `http://localhost:3000/`
+Servidor: `http://localhost:4000`  
+Monitor Socket.IO: `http://localhost:4000/`
 
 ## Variables de entorno
 
 | Variable    | Descripción                                      | Ejemplo                 |
 |-------------|--------------------------------------------------|-------------------------|
-| `PORT`      | Puerto HTTP del servidor                         | `3000`                  |
+| `PORT`      | Puerto HTTP del servidor                         | `4000`                  |
 | `DATA_PATH` | Ruta al archivo JSON de turnos (relativa o abs.) | `./data/turnos.json`    |
 
 ## Scripts npm
@@ -92,7 +92,7 @@ Esos eventos se retransmiten a los clientes WebSocket como:
 - `turno:actualizado`
 - `turno:eliminado`
 
-Abrí `http://localhost:3000/` y ejecutá POST/PUT/DELETE desde Postman para ver el feed sin recargar.
+Abrí `http://localhost:4000/` y ejecutá POST/PUT/DELETE desde Postman para ver el feed sin recargar.
 
 ## Estructura del proyecto
 
