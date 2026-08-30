@@ -1,14 +1,14 @@
 import { EventEmitter } from 'node:events';
 
 /**
- * Bus de eventos internos desacoplado del transporte HTTP/WebSocket.
+ * Internal event bus decoupled from HTTP/WebSocket transport.
  */
 export const eventBus = new EventEmitter();
 
-export const EventosInternos = {
-  CREADO: 'turno:creado',
-  ACTUALIZADO: 'turno:actualizado',
-  ELIMINADO: 'turno:eliminado',
+export const InternalEvents = {
+  CREATED: 'appointment:created',
+  UPDATED: 'appointment:updated',
+  DELETED: 'appointment:deleted',
 } as const;
 
-export type NombreEventoInterno = (typeof EventosInternos)[keyof typeof EventosInternos];
+export type InternalEventName = (typeof InternalEvents)[keyof typeof InternalEvents];

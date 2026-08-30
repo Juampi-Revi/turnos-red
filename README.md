@@ -1,34 +1,25 @@
 # TurnosRed
 
-Backend prototipo para centralizar la gestión de turnos de centros de atención ambulatoria (clínica médica, pediatría, odontología y nutrición).
+Backend para centralizar la gestión de turnos de centros de atención ambulatoria (clínica médica, pediatría, odontología y nutrición).
 
-Stack: **Node.js (LTS) + TypeScript + Express + Socket.IO**.
+Stack: **Node.js (LTS) + TypeScript + Express + Zod + Socket.IO**.
 
 ## Requisitos previos
 
 - [NVM](https://github.com/nvm-sh/nvm)
 - Node.js LTS (ver `.nvmrc`, actualmente `22`)
-- npm (único manejador de paquetes del proyecto)
+- npm
 - Git
-- Cliente HTTP (Postman o similar) para probar la API
+- [Postman](https://www.postman.com/) para pruebas de API y Mock Server
 
 ## Instalación
 
 ```bash
-# Clonar el repositorio
-git clone <URL_DEL_REPO>
+git clone https://github.com/Juampi-Revi/turnos-red.git
 cd turnos-red
-
-# Usar la versión de Node indicada
 nvm use
-
-# Instalar dependencias
 npm install
-
-# Configurar variables de entorno
 cp .env.example .env
-
-# Desarrollo (recarga con tsx)
 npm run dev
 ```
 
@@ -37,97 +28,156 @@ Monitor Socket.IO: `http://localhost:4000/`
 
 ## Variables de entorno
 
-| Variable    | Descripción                                      | Ejemplo                 |
-|-------------|--------------------------------------------------|-------------------------|
-| `PORT`      | Puerto HTTP del servidor                         | `4000`                  |
-| `DATA_PATH` | Ruta al archivo JSON de turnos (relativa o abs.) | `./data/turnos.json`    |
+| Variable            | Descripción                         | Ejemplo                  |
+|---------------------|-------------------------------------|--------------------------|
+| `PORT`              | Puerto HTTP del servidor            | `4000`                   |
+| `APPOINTMENTS_PATH` | Archivo JSON de turnos              | `./data/turnos.json`     |
+| `DOCTORS_PATH`      | Archivo JSON de médicos             | `./data/medicos.json`    |
 
 ## Scripts npm
 
-| Script          | Descripción                                      |
-|-----------------|--------------------------------------------------|
-| `npm run dev`   | Levanta el servidor en modo desarrollo (`tsx`)   |
-| `npm run build` | Compila TypeScript a `dist/`                     |
-| `npm start`     | Ejecuta la build (`node dist/index.js`)          |
-| `npm run lint`  | Ejecuta ESLint sobre archivos `.ts`              |
-| `npm run format`| Formatea el código fuente con Prettier           |
+| Script           | Descripción                              |
+|------------------|------------------------------------------|
+| `npm run dev`    | Servidor en desarrollo (`tsx watch`)     |
+| `npm run build`  | Compila TypeScript a `dist/`             |
+| `npm start`      | Ejecuta build compilada                  |
+| `npm run lint`   | ESLint sobre archivos `.ts`              |
+| `npm run format` | Prettier sobre `src/**/*.ts`             |
 
-## Endpoints REST
+## Formato de errores
 
-| Método   | Ruta           | Descripción              | Status típicos     |
-|----------|----------------|--------------------------|--------------------|
-| `GET`    | `/turnos`      | Listar todos los turnos  | 200, 500           |
-| `GET`    | `/turnos/:id`  | Obtener un turno por ID  | 200, 400, 404, 500 |
-| `POST`   | `/turnos`      | Crear un turno           | 201, 400, 500      |
-| `PUT`    | `/turnos/:id`  | Actualizar un turno      | 200, 400, 404, 500 |
-| `DELETE` | `/turnos/:id`  | Eliminar un turno        | 200, 400, 404, 500 |
-
-### Ejemplo de body (POST)
+Todas las respuestas fallidas usan el mismo esquema:
 
 ```json
 {
-  "paciente": " Carlos Ruiz ",
-  "documento": 31654210,
-  "especialidad": "PEDIATRÍA",
+  "status": 400,
+  "message": "Error de validación en los datos ingresados",
+  "code": "VALIDATION_ERROR",
+  "details": [
+    { "field": "especialidad", "message": "especialidad inválida" }
+  ]
+}
+```
+
+Códigos comunes: `VALIDATION_ERROR`, `NOT_FOUND`, `INTERNAL_ERROR`.
+
+## Endpoints — Turnos (`/turnos`)
+
+| Método   | Ruta           | Descripción        | Status típicos        |
+|----------|----------------|--------------------|-----------------------|
+| `GET`    | `/turnos`      | Listar turnos      | 200, 400, 500         |
+| `GET`    | `/turnos/:id`  | Turno por ID       | 200, 400, 404, 500    |
+| `POST`   | `/turnos`      | Crear turno        | 201, 400, 404, 500    |
+| `PUT`    | `/turnos/:id`  | Actualizar turno   | 200, 400, 404, 500    |
+| `DELETE` | `/turnos/:id`  | Eliminar turno     | 204, 400, 404, 500    |
+
+### Query params — `GET /turnos`
+
+| Parámetro      | Ejemplo              | Descripción                    |
+|----------------|----------------------|--------------------------------|
+| `especialidad` | `Pediatria`          | Filtra por especialidad        |
+| `fecha`        | `14/08/2026`         | Filtra por fecha (DD/MM/YYYY)  |
+| `medicoId`     | `1`                  | Filtra por médico asignado     |
+
+Ejemplo: `/turnos?especialidad=Pediatria&fecha=14/08/2026&medicoId=1`
+
+### Body ejemplo — `POST /turnos`
+
+```json
+{
+  "paciente": "Carlos Ruiz",
+  "documento": "31654210",
+  "especialidad": "Pediatría",
   "fecha": "14/08/2026",
   "hora": "10.00",
   "confirmado": "si",
+  "medicoId": 1,
   "observaciones": "Control de rutina"
 }
 ```
 
-El servidor normaliza tipos (id numérico, documento string, hora `HH:mm`, fecha `YYYY-MM-DD`, `confirmado` booleano) y descarta registros inválidos al cargar el archivo inicial.
+## Endpoints — Médicos (`/medicos`)
 
-## Tiempo real (Socket.IO)
+| Método   | Ruta            | Descripción         | Status típicos        |
+|----------|-----------------|---------------------|-----------------------|
+| `GET`    | `/medicos`      | Listar médicos      | 200, 400, 500         |
+| `GET`    | `/medicos/:id`  | Médico por ID       | 200, 400, 404, 500    |
+| `POST`   | `/medicos`      | Registrar médico    | 201, 400, 500         |
+| `PUT`    | `/medicos/:id`  | Actualizar médico   | 200, 400, 404, 500    |
+| `DELETE` | `/medicos/:id`  | Dar de baja médico  | 204, 400, 404, 500    |
 
-Ante operaciones exitosas de escritura, el bus interno (`EventEmitter`) emite:
+### Query params — `GET /medicos`
 
-- `turno:creado`
-- `turno:actualizado`
-- `turno:eliminado`
+| Parámetro      | Ejemplo        | Descripción              |
+|----------------|----------------|--------------------------|
+| `especialidad` | `Odontologia`  | Filtra por especialidad  |
+| `disponible`   | `true`         | Filtra por disponibilidad|
 
-Esos eventos se retransmiten a los clientes WebSocket como:
+Ejemplo: `/medicos?especialidad=Odontologia&disponible=false`
 
-- `turno:nuevo`
-- `turno:actualizado`
-- `turno:eliminado`
+### Body ejemplo — `POST /medicos`
 
-Abrí `http://localhost:4000/` y ejecutá POST/PUT/DELETE desde Postman para ver el feed sin recargar.
+```json
+{
+  "nombre": "Dra. Ana Martínez",
+  "documento": "30111222",
+  "especialidad": "Pediatría",
+  "disponible": true
+}
+```
+
+Especialidades válidas (Title Case): `Clínica médica`, `Pediatría`, `Odontología`, `Nutrición`.
+
+## Postman
+
+Importar:
+
+- Colección: `turnos-red.postman_collection.json`
+- Variables incluidas: `baseUrl`, `doctorId`, `appointmentId`
+
+La colección incluye tests automatizados (status codes, esquema JSON) y **Saved Responses** para configurar un **Mock Server** en Postman.
 
 ## Estructura del proyecto
 
 ```text
 turnos-red/
-├── .env.example          # Plantilla de variables de entorno
-├── .nvmrc                # Versión de Node (LTS)
-├── .eslintrc.cjs         # ESLint + TypeScript
-├── .prettierrc           # Prettier
-├── package.json          # type: module + scripts
-├── package-lock.json     # Único lockfile (npm)
-├── tsconfig.json         # strict: true, outDir: dist
 ├── data/
-│   └── turnos.json       # Datos de entrada / persistencia
+│   ├── turnos.json
+│   └── medicos.json
 ├── public/
-│   └── index.html        # Cliente Socket.IO de demostración
+│   └── index.html
+├── turnos-red.postman_collection.json
 └── src/
-    ├── index.ts          # Bootstrap HTTP + Socket.IO
-    ├── app.ts            # App Express
-    ├── config/           # Variables de entorno
-    ├── models/           # TurnoCrudo y Turno
-    ├── utils/            # Normalización + ejemplo callbacks vs promises
-    ├── services/         # Lógica de negocio + EventEmitter
-    ├── controllers/      # Handlers HTTP
-    └── routes/           # Rutas REST
+    ├── index.ts
+    ├── app.ts
+    ├── config/
+    ├── controllers/     # appointmentController, doctorController
+    ├── errors/          # AppError
+    ├── middleware/      # validate, errorHandler, routeHandler
+    ├── models/          # Appointment, Doctor
+    ├── routes/          # appointmentRoutes, doctorRoutes
+    ├── schemas/         # Zod schemas (appointment, doctor, common)
+    ├── services/        # appointmentService, doctorService, eventBus
+    └── utils/
 ```
 
-Separación de responsabilidades: **routes → controllers → services → models**.
+Flujo: **routes → controllers → services → models/schemas**.
 
-## Depuración en VS Code
+Validación de entrada con **Zod** en middleware. Eventos internos (`EventEmitter`) se retransmiten por **Socket.IO** en operaciones de escritura sobre turnos.
 
-1. Abrí la carpeta `turnos-red` en VS Code / Cursor.
-2. Colocá un breakpoint (por ejemplo en `src/utils/normalizeTurno.ts` o en un controller).
-3. Ejecutá la configuración **Debug TurnosRed** (`.vscode/launch.json`).
-4. Dispará un request desde Postman y capturá la sesión de debug.
+## Uso de Inteligencia Artificial
+
+| Tarea | Herramienta | Prompt | Respuesta generada | Ajuste manual aplicado |
+|-------|-------------|--------|--------------------|------------------------|
+| Schemas Zod | Cursor / Claude | Definir schemas Zod para Turno y Médico con especialidades Title Case y documento string | Esquemas base con `z.object` y transforms | Agregué `specialtyQuerySchema` sin acentos para query params y normalización de fechas |
+| Middleware de errores | Cursor / Claude | Middleware Express con formato `{ status, message, code, details }` | Handler básico + ZodError mapping | Integré `AppError` y `routeHandler` para propagar throws |
+| CRUD Médicos | Cursor / Claude | Implementar /medicos con misma arquitectura en capas | Service + controller + routes | Validación de documento duplicado y persistencia JSON |
+| Colección Postman | Cursor / Claude | Colección con tests 200/201/400/404 y saved responses | JSON v2.1 con carpetas Happy Path y Errors | Ajusté variables dinámicas `doctorId` / `appointmentId` en scripts |
+| README Actividad 2 | Cursor / Claude | Actualizar README con endpoints, query params y tabla IA | Estructura markdown base | Tabla de IA y ejemplos de query params según consigna |
+
+## Depuración en VS Code / Cursor
+
+Configuración **Debug TurnosRed** en `.vscode/launch.json`. Abrir workspace `turnos-red` o raíz con launch apuntando a `turnos-red/`.
 
 ## Licencia
 

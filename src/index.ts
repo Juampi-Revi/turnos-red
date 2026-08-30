@@ -2,12 +2,14 @@ import http from 'node:http';
 import { Server as SocketIOServer } from 'socket.io';
 import { createApp } from './app.js';
 import { env } from './config/env.js';
-import { EventosInternos, eventBus } from './services/eventBus.js';
-import { cargarTurnos } from './services/turnosService.js';
-import type { Turno } from './models/Turno.js';
+import type { Appointment } from './models/Appointment.js';
+import { loadAppointments } from './services/appointmentService.js';
+import { loadDoctors } from './services/doctorService.js';
+import { InternalEvents, eventBus } from './services/eventBus.js';
 
 async function bootstrap(): Promise<void> {
-  await cargarTurnos();
+  await loadDoctors();
+  await loadAppointments();
 
   const app = createApp();
   const httpServer = http.createServer(app);
@@ -23,23 +25,23 @@ async function bootstrap(): Promise<void> {
     });
   });
 
-  // Puente: eventos internos → WebSockets en tiempo real
-  eventBus.on(EventosInternos.CREADO, (turno: Turno) => {
-    io.emit('turno:nuevo', turno);
+  eventBus.on(InternalEvents.CREATED, (appointment: Appointment) => {
+    io.emit('turno:nuevo', appointment);
   });
 
-  eventBus.on(EventosInternos.ACTUALIZADO, (turno: Turno) => {
-    io.emit('turno:actualizado', turno);
+  eventBus.on(InternalEvents.UPDATED, (appointment: Appointment) => {
+    io.emit('turno:actualizado', appointment);
   });
 
-  eventBus.on(EventosInternos.ELIMINADO, (turno: Turno) => {
-    io.emit('turno:eliminado', turno);
+  eventBus.on(InternalEvents.DELETED, (appointment: Appointment) => {
+    io.emit('turno:eliminado', appointment);
   });
 
   httpServer.listen(env.port, () => {
     console.log(`[TurnosRed] API escuchando en http://localhost:${env.port}`);
     console.log(`[TurnosRed] Cliente realtime: http://localhost:${env.port}/`);
-    console.log(`[TurnosRed] Datos: ${env.dataPath}`);
+    console.log(`[TurnosRed] Turnos: ${env.appointmentsPath}`);
+    console.log(`[TurnosRed] Médicos: ${env.doctorsPath}`);
   });
 }
 

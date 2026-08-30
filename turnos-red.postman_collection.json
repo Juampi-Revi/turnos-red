@@ -1,0 +1,497 @@
+{
+  "info": {
+    "name": "TurnosRed API",
+    "_postman_id": "turnos-red-collection",
+    "description": "Colección Actividad 2 — TurnosRed con tests automatizados y ejemplos para Mock Server.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:4000" },
+    { "key": "doctorId", "value": "1" },
+    { "key": "appointmentId", "value": "102" }
+  ],
+  "item": [
+    {
+      "name": "Turnos - Happy Path",
+      "item": [
+        {
+          "name": "GET /turnos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/turnos"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Has data array', () => {",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json.data).to.be.an('array');",
+                  "  pm.expect(json.total).to.be.a('number');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\"data\":[{\"id\":102,\"paciente\":\"Carlos Ruiz\",\"documento\":\"31654210\",\"especialidad\":\"Pediatría\",\"fecha\":\"2026-08-14\",\"hora\":\"10:00\",\"confirmado\":true,\"medicoId\":1}],\"total\":1}"
+            }
+          ]
+        },
+        {
+          "name": "GET /turnos/:id",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/turnos/{{appointmentId}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Has appointment data', () => {",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json.data).to.be.an('object');",
+                  "  pm.expect(json.data.id).to.eql(Number(pm.collectionVariables.get('appointmentId')));",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "body": "{\"data\":{\"id\":102,\"paciente\":\"Carlos Ruiz\",\"documento\":\"31654210\",\"especialidad\":\"Pediatría\",\"fecha\":\"2026-08-14\",\"hora\":\"10:00\",\"confirmado\":true,\"medicoId\":1}}"
+            }
+          ]
+        },
+        {
+          "name": "POST /turnos",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"paciente\": \"Test User\",\n  \"documento\": \"12345678\",\n  \"especialidad\": \"Pediatría\",\n  \"fecha\": \"21/08/2026\",\n  \"hora\": \"14.00\",\n  \"confirmado\": \"si\",\n  \"medicoId\": 1\n}"
+            },
+            "url": "{{baseUrl}}/turnos"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 201', () => pm.response.to.have.status(201));",
+                  "pm.test('Appointment created', () => {",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json.data).to.be.an('object');",
+                  "  pm.expect(json.data.medicoId).to.eql(1);",
+                  "  pm.collectionVariables.set('appointmentId', json.data.id);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "201 Created",
+              "status": "Created",
+              "code": 201,
+              "body": "{\"data\":{\"id\":107,\"paciente\":\"Test User\",\"documento\":\"12345678\",\"especialidad\":\"Pediatría\",\"fecha\":\"2026-08-21\",\"hora\":\"14:00\",\"confirmado\":true,\"medicoId\":1},\"message\":\"Turno creado\"}"
+            }
+          ]
+        },
+        {
+          "name": "PUT /turnos/:id",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"observaciones\": \"Reprogramado\",\n  \"confirmado\": false\n}"
+            },
+            "url": "{{baseUrl}}/turnos/{{appointmentId}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Appointment updated', () => {",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json.data.confirmado).to.eql(false);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "body": "{\"data\":{\"id\":102,\"paciente\":\"Carlos Ruiz\",\"documento\":\"31654210\",\"especialidad\":\"Pediatría\",\"fecha\":\"2026-08-14\",\"hora\":\"10:00\",\"confirmado\":false,\"medicoId\":1,\"observaciones\":\"Reprogramado\"},\"message\":\"Turno actualizado\"}"
+            }
+          ]
+        },
+        {
+          "name": "DELETE /turnos/:id",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/turnos/{{appointmentId}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 204', () => pm.response.to.have.status(204));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "204 No Content",
+              "status": "No Content",
+              "code": 204,
+              "body": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Medicos - Happy Path",
+      "item": [
+        {
+          "name": "GET /medicos",
+          "request": { "method": "GET", "url": "{{baseUrl}}/medicos" },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Has doctors array', () => {",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json.data).to.be.an('array');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "body": "{\"data\":[{\"id\":1,\"nombre\":\"Dra. Ana Martínez\",\"documento\":\"30111222\",\"especialidad\":\"Pediatría\",\"disponible\":true}],\"total\":1}"
+            }
+          ]
+        },
+        {
+          "name": "GET /medicos/:id",
+          "request": { "method": "GET", "url": "{{baseUrl}}/medicos/{{doctorId}}" },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Has doctor data', () => {",
+                  "  pm.expect(pm.response.json().data).to.be.an('object');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "body": "{\"data\":{\"id\":1,\"nombre\":\"Dra. Ana Martínez\",\"documento\":\"30111222\",\"especialidad\":\"Pediatría\",\"disponible\":true}}"
+            }
+          ]
+        },
+        {
+          "name": "POST /medicos",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Dr. Test Médico\",\n  \"documento\": \"99887766\",\n  \"especialidad\": \"Odontología\",\n  \"disponible\": true\n}"
+            },
+            "url": "{{baseUrl}}/medicos"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 201', () => pm.response.to.have.status(201));",
+                  "const json = pm.response.json();",
+                  "pm.collectionVariables.set('doctorId', json.data.id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "201 Created",
+              "status": "Created",
+              "code": 201,
+              "body": "{\"data\":{\"id\":5,\"nombre\":\"Dr. Test Médico\",\"documento\":\"99887766\",\"especialidad\":\"Odontología\",\"disponible\":true},\"message\":\"Médico creado\"}"
+            }
+          ]
+        },
+        {
+          "name": "PUT /medicos/:id",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"disponible\": false\n}" },
+            "url": "{{baseUrl}}/medicos/{{doctorId}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.expect(pm.response.json().data.disponible).to.eql(false);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "body": "{\"data\":{\"id\":1,\"nombre\":\"Dra. Ana Martínez\",\"documento\":\"30111222\",\"especialidad\":\"Pediatría\",\"disponible\":false},\"message\":\"Médico actualizado\"}"
+            }
+          ]
+        },
+        {
+          "name": "DELETE /medicos/:id",
+          "request": { "method": "DELETE", "url": "{{baseUrl}}/medicos/{{doctorId}}" },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": ["pm.test('Status 204', () => pm.response.to.have.status(204));"],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "204 No Content",
+              "status": "No Content",
+              "code": 204,
+              "body": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Query Filters",
+      "item": [
+        {
+          "name": "GET /turnos?especialidad&fecha",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/turnos?especialidad=Pediatria&fecha=14/08/2026",
+              "host": ["{{baseUrl}}"],
+              "path": ["turnos"],
+              "query": [
+                { "key": "especialidad", "value": "Pediatria" },
+                { "key": "fecha", "value": "14/08/2026" }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Filtered results', () => {",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json.data).to.be.an('array');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "200 Filtered",
+              "status": "OK",
+              "code": 200,
+              "body": "{\"data\":[{\"id\":102,\"paciente\":\"Carlos Ruiz\",\"especialidad\":\"Pediatría\",\"fecha\":\"2026-08-14\",\"medicoId\":1}],\"total\":1}"
+            }
+          ]
+        },
+        {
+          "name": "GET /medicos?especialidad&disponible",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/medicos?especialidad=Odontologia&disponible=false",
+              "host": ["{{baseUrl}}"],
+              "path": ["medicos"],
+              "query": [
+                { "key": "especialidad", "value": "Odontologia" },
+                { "key": "disponible", "value": "false" }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Only unavailable dentists', () => {",
+                  "  const json = pm.response.json();",
+                  "  json.data.forEach(d => pm.expect(d.disponible).to.eql(false));",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "200 Filtered",
+              "status": "OK",
+              "code": 200,
+              "body": "{\"data\":[{\"id\":3,\"nombre\":\"Dra. Lucía Gómez\",\"especialidad\":\"Odontología\",\"disponible\":false}],\"total\":1}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Errors",
+      "item": [
+        {
+          "name": "POST /turnos - Zod validation 400",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"paciente\": \"\",\n  \"documento\": \"\",\n  \"especialidad\": \"INVALIDA\",\n  \"fecha\": \"bad\",\n  \"hora\": \"99:99\",\n  \"confirmado\": \"quizas\",\n  \"medicoId\": 0\n}"
+            },
+            "url": "{{baseUrl}}/turnos"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 400', () => pm.response.to.have.status(400));",
+                  "pm.test('Standard error format', () => {",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json.status).to.eql(400);",
+                  "  pm.expect(json.code).to.eql('VALIDATION_ERROR');",
+                  "  pm.expect(json.details).to.be.an('array');",
+                  "  pm.expect(json.details.length).to.be.above(0);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "400 Validation Error",
+              "status": "Bad Request",
+              "code": 400,
+              "body": "{\"status\":400,\"message\":\"Error de validación en los datos ingresados\",\"code\":\"VALIDATION_ERROR\",\"details\":[{\"field\":\"paciente\",\"message\":\"paciente es obligatorio\"}]}"
+            }
+          ]
+        },
+        {
+          "name": "GET /turnos/:id - Not Found 404",
+          "request": { "method": "GET", "url": "{{baseUrl}}/turnos/99999" },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 404', () => pm.response.to.have.status(404));",
+                  "pm.test('NOT_FOUND code', () => {",
+                  "  pm.expect(pm.response.json().code).to.eql('NOT_FOUND');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "404 Not Found",
+              "status": "Not Found",
+              "code": 404,
+              "body": "{\"status\":404,\"message\":\"No se encontró el turno con id 99999\",\"code\":\"NOT_FOUND\",\"details\":[]}"
+            }
+          ]
+        },
+        {
+          "name": "GET /medicos/:id - Not Found 404",
+          "request": { "method": "GET", "url": "{{baseUrl}}/medicos/99999" },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 404', () => pm.response.to.have.status(404));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "404 Not Found",
+              "status": "Not Found",
+              "code": 404,
+              "body": "{\"status\":404,\"message\":\"No se encontró el médico con id 99999\",\"code\":\"NOT_FOUND\",\"details\":[]}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

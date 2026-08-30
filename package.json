@@ -1,7 +1,7 @@
 {
   "name": "turnos-red",
   "version": "1.0.0",
-  "description": "Backend TurnosRed: gestión de turnos médicos con Express, TypeScript y Socket.IO",
+  "description": "Backend TurnosRed: gestión de turnos y médicos con Express, TypeScript, Zod y Socket.IO",
   "type": "module",
   "main": "dist/index.js",
   "scripts": {
@@ -23,7 +23,8 @@
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
-    "socket.io": "^4.8.3"
+    "socket.io": "^4.8.3",
+    "zod": "^4.5.4"
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",

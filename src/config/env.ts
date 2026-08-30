@@ -16,6 +16,10 @@ function requireEnv(name: string): string {
   return value.trim();
 }
 
+function resolveDataPath(envValue: string): string {
+  return path.isAbsolute(envValue) ? envValue : path.resolve(projectRoot, envValue);
+}
+
 const portRaw = process.env.PORT ?? '4000';
 const port = Number(portRaw);
 
@@ -23,10 +27,9 @@ if (!Number.isInteger(port) || port <= 0) {
   throw new Error(`PORT inválido: ${portRaw}`);
 }
 
-const dataPathEnv = requireEnv('DATA_PATH');
-
 export const env = {
   port,
-  dataPath: path.isAbsolute(dataPathEnv) ? dataPathEnv : path.resolve(projectRoot, dataPathEnv),
+  appointmentsPath: resolveDataPath(requireEnv('APPOINTMENTS_PATH')),
+  doctorsPath: resolveDataPath(requireEnv('DOCTORS_PATH')),
   projectRoot,
 };
