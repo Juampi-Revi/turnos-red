@@ -1,0 +1,66 @@
+[
+  {
+    "id": "102",
+    "paciente": " Carlos Ruiz ",
+    "documento": 31654210,
+    "especialidad": "PEDIATRÍA",
+    "fecha": "14/08/2026",
+    "hora": "10.00",
+    "confirmado": "si"
+  },
+  {
+    "id": "103",
+    "paciente": "María  López",
+    "documento": "28456321",
+    "especialidad": "clínica médica",
+    "fecha": "15/08/2026",
+    "hora": "11:30",
+    "confirmado": true,
+    "observaciones": "Primera consulta"
+  },
+  {
+    "id": "104",
+    "paciente": "Ana Gómez",
+    "documento": 40111222,
+    "especialidad": "ODONTOLOGÍA",
+    "fecha": "16/08/2026",
+    "hora": "09.15",
+    "confirmado": "no"
+  },
+  {
+    "id": "105",
+    "paciente": " Pedro  Fernández ",
+    "documento": 25999888,
+    "especialidad": "NUTRICIÓN",
+    "fecha": "17/08/2026",
+    "hora": "16.00",
+    "confirmado": "1"
+  },
+  {
+    "id": "abc",
+    "paciente": "Registro inválido",
+    "documento": 111,
+    "especialidad": "PEDIATRÍA",
+    "fecha": "18/08/2026",
+    "hora": "10.00",
+    "confirmado": "si"
+  },
+  {
+    "id": "-5",
+    "paciente": "Otro inválido",
+    "documento": 222,
+    "especialidad": "CLÍNICA",
+    "fecha": "19/08/2026",
+    "hora": "12.00",
+    "confirmado": "si"
+  },
+  {
+    "id": "106",
+    "paciente": "Lucía Martínez",
+    "documento": 37888444,
+    "especialidad": "PEDIATRÍA",
+    "fecha": "20/08/2026",
+    "hora": "08.45",
+    "confirmado": "sí"
+  }
+]

@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TurnosRed · Monitor en vivo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,500;8..60,700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --ink: #1a2421;
+        --paper: #f3efe6;
+        --panel: #fffdf8;
+        --line: #c9c0b0;
+        --accent: #0f6e56;
+        --warn: #9a3412;
+        --mute: #5c655f;
+        --nuevo: #0f6e56;
+        --upd: #1d4ed8;
+        --del: #9a3412;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        color: var(--ink);
+        background:
+          radial-gradient(circle at 12% 8%, #dfece6 0, transparent 42%),
+          radial-gradient(circle at 88% 0%, #efe4d2 0, transparent 35%),
+          var(--paper);
+        font-family: 'IBM Plex Mono', ui-monospace, monospace;
+      }
+
+      .wrap {
+        max-width: 920px;
+        margin: 0 auto;
+        padding: 2.5rem 1.25rem 3rem;
+      }
+
+      header {
+        display: grid;
+        gap: 0.75rem;
+        margin-bottom: 1.75rem;
+        border-bottom: 2px solid var(--ink);
+        padding-bottom: 1.25rem;
+      }
+
+      h1 {
+        margin: 0;
+        font-family: 'Source Serif 4', Georgia, serif;
+        font-size: clamp(2rem, 5vw, 3rem);
+        letter-spacing: -0.02em;
+        font-weight: 700;
+      }
+
+      .sub {
+        color: var(--mute);
+        font-size: 0.9rem;
+        line-height: 1.5;
+        max-width: 54ch;
+      }
+
+      .status {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.55rem;
+        width: fit-content;
+        padding: 0.35rem 0.7rem;
+        border: 1px solid var(--line);
+        background: var(--panel);
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+      }
+
+      .dot {
+        width: 0.55rem;
+        height: 0.55rem;
+        border-radius: 50%;
+        background: var(--warn);
+      }
+
+      .dot.ok {
+        background: var(--accent);
+        box-shadow: 0 0 0 4px rgba(15, 110, 86, 0.15);
+      }
+
+      .grid {
+        display: grid;
+        gap: 1rem;
+        grid-template-columns: 1.1fr 0.9fr;
+      }
+
+      @media (max-width: 800px) {
+        .grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .panel {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        box-shadow: 6px 6px 0 rgba(26, 36, 33, 0.08);
+      }
+
+      .panel h2 {
+        margin: 0;
+        padding: 0.85rem 1rem;
+        border-bottom: 1px solid var(--line);
+        font-family: 'Source Serif 4', Georgia, serif;
+        font-size: 1.15rem;
+      }
+
+      .feed {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        max-height: 420px;
+        overflow: auto;
+      }
+
+      .feed li {
+        padding: 0.85rem 1rem;
+        border-bottom: 1px dashed var(--line);
+        animation: in 280ms ease-out;
+      }
+
+      .feed li:last-child {
+        border-bottom: none;
+      }
+
+      .tag {
+        display: inline-block;
+        font-size: 0.72rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        margin-bottom: 0.35rem;
+        font-weight: 500;
+      }
+
+      .tag.nuevo {
+        color: var(--nuevo);
+      }
+      .tag.actualizado {
+        color: var(--upd);
+      }
+      .tag.eliminado {
+        color: var(--del);
+      }
+
+      .meta {
+        font-size: 0.82rem;
+        line-height: 1.45;
+      }
+
+      .time {
+        color: var(--mute);
+        font-size: 0.72rem;
+        margin-top: 0.35rem;
+      }
+
+      .hint {
+        padding: 1rem;
+        font-size: 0.82rem;
+        line-height: 1.55;
+        color: var(--mute);
+      }
+
+      code {
+        color: var(--ink);
+        background: #ebe4d7;
+        padding: 0.1rem 0.3rem;
+      }
+
+      @keyframes in {
+        from {
+          opacity: 0;
+          transform: translateY(-6px);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <div class="status" id="status">
+          <span class="dot" id="dot"></span>
+          <span id="statusText">desconectado</span>
+        </div>
+        <h1>TurnosRed · monitor</h1>
+        <p class="sub">
+          Cliente Socket.IO para evidenciar eventos en tiempo real sin recargar la página ni hacer
+          polling. Dispará POST / PUT / DELETE desde Postman y mirá el feed.
+        </p>
+      </header>
+
+      <div class="grid">
+        <section class="panel">
+          <h2>Eventos en vivo</h2>
+          <ul class="feed" id="feed">
+            <li class="meta" style="color: var(--mute)">Esperando eventos…</li>
+          </ul>
+        </section>
+
+        <section class="panel">
+          <h2>Cómo probar</h2>
+          <div class="hint">
+            1. Dejá esta pestaña abierta.<br /><br />
+            2. En Postman creá un turno:<br />
+            <code>POST http://localhost:3000/turnos</code><br /><br />
+            Body ejemplo:<br />
+            <code>
+              {"paciente":"Test User","documento":"123","especialidad":"PEDIATRÍA","fecha":"21/08/2026","hora":"14.00","confirmado":"si"}
+            </code>
+            <br /><br />
+            3. Deberías ver <strong>turno:nuevo</strong> acá al instante.
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      const feed = document.getElementById('feed');
+      const statusText = document.getElementById('statusText');
+      const dot = document.getElementById('dot');
+      let primed = false;
+
+      const socket = io();
+
+      socket.on('connect', () => {
+        statusText.textContent = 'conectado · ' + socket.id.slice(0, 8);
+        dot.classList.add('ok');
+      });
+
+      socket.on('disconnect', () => {
+        statusText.textContent = 'desconectado';
+        dot.classList.remove('ok');
+      });
+
+      function pushEvent(tipo, payload) {
+        if (!primed) {
+          feed.innerHTML = '';
+          primed = true;
+        }
+
+        const li = document.createElement('li');
+        const tag = document.createElement('div');
+        tag.className = 'tag ' + tipo.replace('turno:', '');
+        tag.textContent = tipo;
+
+        const meta = document.createElement('div');
+        meta.className = 'meta';
+        meta.textContent = `#${payload.id} · ${payload.paciente} · ${payload.especialidad} · ${payload.fecha} ${payload.hora}`;
+
+        const time = document.createElement('div');
+        time.className = 'time';
+        time.textContent = new Date().toLocaleTimeString('es-AR');
+
+        li.append(tag, meta, time);
+        feed.prepend(li);
+      }
+
+      socket.on('turno:nuevo', (t) => pushEvent('turno:nuevo', t));
+      socket.on('turno:actualizado', (t) => pushEvent('turno:actualizado', t));
+      socket.on('turno:eliminado', (t) => pushEvent('turno:eliminado', t));
+    </script>
+  </body>
+</html>
