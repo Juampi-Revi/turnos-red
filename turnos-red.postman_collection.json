@@ -6,9 +6,18 @@
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
-    { "key": "baseUrl", "value": "http://localhost:4000" },
-    { "key": "doctorId", "value": "1" },
-    { "key": "appointmentId", "value": "102" }
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:4000"
+    },
+    {
+      "key": "doctorId",
+      "value": "1"
+    },
+    {
+      "key": "appointmentId",
+      "value": "102"
+    }
   ],
   "item": [
     {
@@ -19,7 +28,15 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{baseUrl}}/turnos"
+            "url": {
+              "raw": "{{baseUrl}}/turnos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "turnos"
+              ]
+            }
           },
           "event": [
             {
@@ -43,8 +60,26 @@
               "status": "OK",
               "code": 200,
               "_postman_previewlanguage": "json",
-              "header": [{ "key": "Content-Type", "value": "application/json" }],
-              "body": "{\"data\":[{\"id\":102,\"paciente\":\"Carlos Ruiz\",\"documento\":\"31654210\",\"especialidad\":\"Pediatría\",\"fecha\":\"2026-08-14\",\"hora\":\"10:00\",\"confirmado\":true,\"medicoId\":1}],\"total\":1}"
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\"data\":[{\"id\":102,\"paciente\":\"Carlos Ruiz\",\"documento\":\"31654210\",\"especialidad\":\"Pediatría\",\"fecha\":\"2026-08-14\",\"hora\":\"10:00\",\"confirmado\":true,\"medicoId\":1}],\"total\":1}",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/turnos",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "turnos"
+                  ]
+                }
+              }
             }
           ]
         },
@@ -52,7 +87,16 @@
           "name": "GET /turnos/:id",
           "request": {
             "method": "GET",
-            "url": "{{baseUrl}}/turnos/{{appointmentId}}"
+            "url": {
+              "raw": "{{baseUrl}}/turnos/{{appointmentId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "turnos",
+                "{{appointmentId}}"
+              ]
+            }
           },
           "event": [
             {
@@ -75,7 +119,27 @@
               "name": "200 OK",
               "status": "OK",
               "code": 200,
-              "body": "{\"data\":{\"id\":102,\"paciente\":\"Carlos Ruiz\",\"documento\":\"31654210\",\"especialidad\":\"Pediatría\",\"fecha\":\"2026-08-14\",\"hora\":\"10:00\",\"confirmado\":true,\"medicoId\":1}}"
+              "body": "{\"data\":{\"id\":102,\"paciente\":\"Carlos Ruiz\",\"documento\":\"31654210\",\"especialidad\":\"Pediatría\",\"fecha\":\"2026-08-14\",\"hora\":\"10:00\",\"confirmado\":true,\"medicoId\":1}}",
+              "originalRequest": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{baseUrl}}/turnos/{{appointmentId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "turnos",
+                    "{{appointmentId}}"
+                  ]
+                }
+              },
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "_postman_previewlanguage": "json"
             }
           ]
         },
@@ -83,12 +147,25 @@
           "name": "POST /turnos",
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"paciente\": \"Test User\",\n  \"documento\": \"12345678\",\n  \"especialidad\": \"Pediatría\",\n  \"fecha\": \"21/08/2026\",\n  \"hora\": \"14.00\",\n  \"confirmado\": \"si\",\n  \"medicoId\": 1\n}"
             },
-            "url": "{{baseUrl}}/turnos"
+            "url": {
+              "raw": "{{baseUrl}}/turnos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "turnos"
+              ]
+            }
           },
           "event": [
             {
@@ -112,7 +189,36 @@
               "name": "201 Created",
               "status": "Created",
               "code": 201,
-              "body": "{\"data\":{\"id\":107,\"paciente\":\"Test User\",\"documento\":\"12345678\",\"especialidad\":\"Pediatría\",\"fecha\":\"2026-08-21\",\"hora\":\"14:00\",\"confirmado\":true,\"medicoId\":1},\"message\":\"Turno creado\"}"
+              "body": "{\"data\":{\"id\":107,\"paciente\":\"Test User\",\"documento\":\"12345678\",\"especialidad\":\"Pediatría\",\"fecha\":\"2026-08-21\",\"hora\":\"14:00\",\"confirmado\":true,\"medicoId\":1},\"message\":\"Turno creado\"}",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"paciente\": \"Test User\",\n  \"documento\": \"12345678\",\n  \"especialidad\": \"Pediatría\",\n  \"fecha\": \"21/08/2026\",\n  \"hora\": \"14.00\",\n  \"confirmado\": \"si\",\n  \"medicoId\": 1\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/turnos",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "turnos"
+                  ]
+                }
+              },
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "_postman_previewlanguage": "json"
             }
           ]
         },
@@ -120,12 +226,26 @@
           "name": "PUT /turnos/:id",
           "request": {
             "method": "PUT",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"observaciones\": \"Reprogramado\",\n  \"confirmado\": false\n}"
             },
-            "url": "{{baseUrl}}/turnos/{{appointmentId}}"
+            "url": {
+              "raw": "{{baseUrl}}/turnos/{{appointmentId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "turnos",
+                "{{appointmentId}}"
+              ]
+            }
           },
           "event": [
             {
@@ -147,7 +267,37 @@
               "name": "200 OK",
               "status": "OK",
               "code": 200,
-              "body": "{\"data\":{\"id\":102,\"paciente\":\"Carlos Ruiz\",\"documento\":\"31654210\",\"especialidad\":\"Pediatría\",\"fecha\":\"2026-08-14\",\"hora\":\"10:00\",\"confirmado\":false,\"medicoId\":1,\"observaciones\":\"Reprogramado\"},\"message\":\"Turno actualizado\"}"
+              "body": "{\"data\":{\"id\":102,\"paciente\":\"Carlos Ruiz\",\"documento\":\"31654210\",\"especialidad\":\"Pediatría\",\"fecha\":\"2026-08-14\",\"hora\":\"10:00\",\"confirmado\":false,\"medicoId\":1,\"observaciones\":\"Reprogramado\"},\"message\":\"Turno actualizado\"}",
+              "originalRequest": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"observaciones\": \"Reprogramado\",\n  \"confirmado\": false\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/turnos/{{appointmentId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "turnos",
+                    "{{appointmentId}}"
+                  ]
+                }
+              },
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "_postman_previewlanguage": "json"
             }
           ]
         },
@@ -155,7 +305,16 @@
           "name": "DELETE /turnos/:id",
           "request": {
             "method": "DELETE",
-            "url": "{{baseUrl}}/turnos/{{appointmentId}}"
+            "url": {
+              "raw": "{{baseUrl}}/turnos/{{appointmentId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "turnos",
+                "{{appointmentId}}"
+              ]
+            }
           },
           "event": [
             {
@@ -173,7 +332,27 @@
               "name": "204 No Content",
               "status": "No Content",
               "code": 204,
-              "body": ""
+              "body": "",
+              "originalRequest": {
+                "method": "DELETE",
+                "url": {
+                  "raw": "{{baseUrl}}/turnos/{{appointmentId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "turnos",
+                    "{{appointmentId}}"
+                  ]
+                }
+              },
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "_postman_previewlanguage": "json"
             }
           ]
         }
@@ -184,7 +363,18 @@
       "item": [
         {
           "name": "GET /medicos",
-          "request": { "method": "GET", "url": "{{baseUrl}}/medicos" },
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/medicos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "medicos"
+              ]
+            }
+          },
           "event": [
             {
               "listen": "test",
@@ -205,13 +395,44 @@
               "name": "200 OK",
               "status": "OK",
               "code": 200,
-              "body": "{\"data\":[{\"id\":1,\"nombre\":\"Dra. Ana Martínez\",\"documento\":\"30111222\",\"especialidad\":\"Pediatría\",\"disponible\":true}],\"total\":1}"
+              "body": "{\"data\":[{\"id\":1,\"nombre\":\"Dra. Ana Martínez\",\"documento\":\"30111222\",\"especialidad\":\"Pediatría\",\"disponible\":true}],\"total\":1}",
+              "originalRequest": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{baseUrl}}/medicos",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "medicos"
+                  ]
+                }
+              },
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "_postman_previewlanguage": "json"
             }
           ]
         },
         {
           "name": "GET /medicos/:id",
-          "request": { "method": "GET", "url": "{{baseUrl}}/medicos/{{doctorId}}" },
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/medicos/{{doctorId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "medicos",
+                "{{doctorId}}"
+              ]
+            }
+          },
           "event": [
             {
               "listen": "test",
@@ -231,7 +452,27 @@
               "name": "200 OK",
               "status": "OK",
               "code": 200,
-              "body": "{\"data\":{\"id\":1,\"nombre\":\"Dra. Ana Martínez\",\"documento\":\"30111222\",\"especialidad\":\"Pediatría\",\"disponible\":true}}"
+              "body": "{\"data\":{\"id\":1,\"nombre\":\"Dra. Ana Martínez\",\"documento\":\"30111222\",\"especialidad\":\"Pediatría\",\"disponible\":true}}",
+              "originalRequest": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{baseUrl}}/medicos/{{doctorId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "medicos",
+                    "{{doctorId}}"
+                  ]
+                }
+              },
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "_postman_previewlanguage": "json"
             }
           ]
         },
@@ -239,12 +480,25 @@
           "name": "POST /medicos",
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"nombre\": \"Dr. Test Médico\",\n  \"documento\": \"99887766\",\n  \"especialidad\": \"Odontología\",\n  \"disponible\": true\n}"
             },
-            "url": "{{baseUrl}}/medicos"
+            "url": {
+              "raw": "{{baseUrl}}/medicos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "medicos"
+              ]
+            }
           },
           "event": [
             {
@@ -264,7 +518,36 @@
               "name": "201 Created",
               "status": "Created",
               "code": 201,
-              "body": "{\"data\":{\"id\":5,\"nombre\":\"Dr. Test Médico\",\"documento\":\"99887766\",\"especialidad\":\"Odontología\",\"disponible\":true},\"message\":\"Médico creado\"}"
+              "body": "{\"data\":{\"id\":5,\"nombre\":\"Dr. Test Médico\",\"documento\":\"99887766\",\"especialidad\":\"Odontología\",\"disponible\":true},\"message\":\"Médico creado\"}",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nombre\": \"Dr. Test Médico\",\n  \"documento\": \"99887766\",\n  \"especialidad\": \"Odontología\",\n  \"disponible\": true\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/medicos",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "medicos"
+                  ]
+                }
+              },
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "_postman_previewlanguage": "json"
             }
           ]
         },
@@ -272,9 +555,26 @@
           "name": "PUT /medicos/:id",
           "request": {
             "method": "PUT",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": { "mode": "raw", "raw": "{\n  \"disponible\": false\n}" },
-            "url": "{{baseUrl}}/medicos/{{doctorId}}"
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"disponible\": false\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/medicos/{{doctorId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "medicos",
+                "{{doctorId}}"
+              ]
+            }
           },
           "event": [
             {
@@ -293,18 +593,62 @@
               "name": "200 OK",
               "status": "OK",
               "code": 200,
-              "body": "{\"data\":{\"id\":1,\"nombre\":\"Dra. Ana Martínez\",\"documento\":\"30111222\",\"especialidad\":\"Pediatría\",\"disponible\":false},\"message\":\"Médico actualizado\"}"
+              "body": "{\"data\":{\"id\":1,\"nombre\":\"Dra. Ana Martínez\",\"documento\":\"30111222\",\"especialidad\":\"Pediatría\",\"disponible\":false},\"message\":\"Médico actualizado\"}",
+              "originalRequest": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"disponible\": false\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/medicos/{{doctorId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "medicos",
+                    "{{doctorId}}"
+                  ]
+                }
+              },
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "_postman_previewlanguage": "json"
             }
           ]
         },
         {
           "name": "DELETE /medicos/:id",
-          "request": { "method": "DELETE", "url": "{{baseUrl}}/medicos/{{doctorId}}" },
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/medicos/{{doctorId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "medicos",
+                "{{doctorId}}"
+              ]
+            }
+          },
           "event": [
             {
               "listen": "test",
               "script": {
-                "exec": ["pm.test('Status 204', () => pm.response.to.have.status(204));"],
+                "exec": [
+                  "pm.test('Status 204', () => pm.response.to.have.status(204));"
+                ],
                 "type": "text/javascript"
               }
             }
@@ -314,7 +658,27 @@
               "name": "204 No Content",
               "status": "No Content",
               "code": 204,
-              "body": ""
+              "body": "",
+              "originalRequest": {
+                "method": "DELETE",
+                "url": {
+                  "raw": "{{baseUrl}}/medicos/{{doctorId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "medicos",
+                    "{{doctorId}}"
+                  ]
+                }
+              },
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "_postman_previewlanguage": "json"
             }
           ]
         }
@@ -329,11 +693,21 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/turnos?especialidad=Pediatria&fecha=14/08/2026",
-              "host": ["{{baseUrl}}"],
-              "path": ["turnos"],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "turnos"
+              ],
               "query": [
-                { "key": "especialidad", "value": "Pediatria" },
-                { "key": "fecha", "value": "14/08/2026" }
+                {
+                  "key": "especialidad",
+                  "value": "Pediatria"
+                },
+                {
+                  "key": "fecha",
+                  "value": "14/08/2026"
+                }
               ]
             }
           },
@@ -357,7 +731,36 @@
               "name": "200 Filtered",
               "status": "OK",
               "code": 200,
-              "body": "{\"data\":[{\"id\":102,\"paciente\":\"Carlos Ruiz\",\"especialidad\":\"Pediatría\",\"fecha\":\"2026-08-14\",\"medicoId\":1}],\"total\":1}"
+              "body": "{\"data\":[{\"id\":102,\"paciente\":\"Carlos Ruiz\",\"especialidad\":\"Pediatría\",\"fecha\":\"2026-08-14\",\"medicoId\":1}],\"total\":1}",
+              "originalRequest": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{baseUrl}}/turnos?especialidad=Pediatria&fecha=14/08/2026",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "turnos"
+                  ],
+                  "query": [
+                    {
+                      "key": "especialidad",
+                      "value": "Pediatria"
+                    },
+                    {
+                      "key": "fecha",
+                      "value": "14/08/2026"
+                    }
+                  ]
+                }
+              },
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "_postman_previewlanguage": "json"
             }
           ]
         },
@@ -367,11 +770,21 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/medicos?especialidad=Odontologia&disponible=false",
-              "host": ["{{baseUrl}}"],
-              "path": ["medicos"],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "medicos"
+              ],
               "query": [
-                { "key": "especialidad", "value": "Odontologia" },
-                { "key": "disponible", "value": "false" }
+                {
+                  "key": "especialidad",
+                  "value": "Odontologia"
+                },
+                {
+                  "key": "disponible",
+                  "value": "false"
+                }
               ]
             }
           },
@@ -395,7 +808,36 @@
               "name": "200 Filtered",
               "status": "OK",
               "code": 200,
-              "body": "{\"data\":[{\"id\":3,\"nombre\":\"Dra. Lucía Gómez\",\"especialidad\":\"Odontología\",\"disponible\":false}],\"total\":1}"
+              "body": "{\"data\":[{\"id\":3,\"nombre\":\"Dra. Lucía Gómez\",\"especialidad\":\"Odontología\",\"disponible\":false}],\"total\":1}",
+              "originalRequest": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{baseUrl}}/medicos?especialidad=Odontologia&disponible=false",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "medicos"
+                  ],
+                  "query": [
+                    {
+                      "key": "especialidad",
+                      "value": "Odontologia"
+                    },
+                    {
+                      "key": "disponible",
+                      "value": "false"
+                    }
+                  ]
+                }
+              },
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "_postman_previewlanguage": "json"
             }
           ]
         }
@@ -408,12 +850,25 @@
           "name": "POST /turnos - Zod validation 400",
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"paciente\": \"\",\n  \"documento\": \"\",\n  \"especialidad\": \"INVALIDA\",\n  \"fecha\": \"bad\",\n  \"hora\": \"99:99\",\n  \"confirmado\": \"quizas\",\n  \"medicoId\": 0\n}"
             },
-            "url": "{{baseUrl}}/turnos"
+            "url": {
+              "raw": "{{baseUrl}}/turnos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "turnos"
+              ]
+            }
           },
           "event": [
             {
@@ -438,13 +893,54 @@
               "name": "400 Validation Error",
               "status": "Bad Request",
               "code": 400,
-              "body": "{\"status\":400,\"message\":\"Error de validación en los datos ingresados\",\"code\":\"VALIDATION_ERROR\",\"details\":[{\"field\":\"paciente\",\"message\":\"paciente es obligatorio\"}]}"
+              "body": "{\"status\":400,\"message\":\"Error de validación en los datos ingresados\",\"code\":\"VALIDATION_ERROR\",\"details\":[{\"field\":\"paciente\",\"message\":\"paciente es obligatorio\"}]}",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"paciente\": \"\",\n  \"documento\": \"\",\n  \"especialidad\": \"INVALIDA\",\n  \"fecha\": \"bad\",\n  \"hora\": \"99:99\",\n  \"confirmado\": \"quizas\",\n  \"medicoId\": 0\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/turnos",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "turnos"
+                  ]
+                }
+              },
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "_postman_previewlanguage": "json"
             }
           ]
         },
         {
           "name": "GET /turnos/:id - Not Found 404",
-          "request": { "method": "GET", "url": "{{baseUrl}}/turnos/99999" },
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/turnos/99999",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "turnos",
+                "99999"
+              ]
+            }
+          },
           "event": [
             {
               "listen": "test",
@@ -464,13 +960,45 @@
               "name": "404 Not Found",
               "status": "Not Found",
               "code": 404,
-              "body": "{\"status\":404,\"message\":\"No se encontró el turno con id 99999\",\"code\":\"NOT_FOUND\",\"details\":[]}"
+              "body": "{\"status\":404,\"message\":\"No se encontró el turno con id 99999\",\"code\":\"NOT_FOUND\",\"details\":[]}",
+              "originalRequest": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{baseUrl}}/turnos/99999",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "turnos",
+                    "99999"
+                  ]
+                }
+              },
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "_postman_previewlanguage": "json"
             }
           ]
         },
         {
           "name": "GET /medicos/:id - Not Found 404",
-          "request": { "method": "GET", "url": "{{baseUrl}}/medicos/99999" },
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/medicos/99999",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "medicos",
+                "99999"
+              ]
+            }
+          },
           "event": [
             {
               "listen": "test",
@@ -487,7 +1015,27 @@
               "name": "404 Not Found",
               "status": "Not Found",
               "code": 404,
-              "body": "{\"status\":404,\"message\":\"No se encontró el médico con id 99999\",\"code\":\"NOT_FOUND\",\"details\":[]}"
+              "body": "{\"status\":404,\"message\":\"No se encontró el médico con id 99999\",\"code\":\"NOT_FOUND\",\"details\":[]}",
+              "originalRequest": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{baseUrl}}/medicos/99999",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "medicos",
+                    "99999"
+                  ]
+                }
+              },
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "_postman_previewlanguage": "json"
             }
           ]
         }
