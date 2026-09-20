@@ -11,7 +11,7 @@
  * ```ts
  * import fs from 'node:fs';
  *
- * fs.readFile('./data/turnos.json', 'utf8', (err, data) => {
+ * fs.readFile('./src/data/turnos.json', 'utf8', (err, data) => {
  *   if (err) {
  *     console.error('Error con callback:', err);
  *     return;
@@ -31,7 +31,7 @@
  * import { readFile } from 'node:fs/promises';
  *
  * try {
- *   const data = await readFile('./data/turnos.json', 'utf8');
+ *   const data = await readFile('./src/data/turnos.json', 'utf8');
  *   const turnos = JSON.parse(data);
  *   console.log('OK (promesa):', turnos.length);
  * } catch (error) {

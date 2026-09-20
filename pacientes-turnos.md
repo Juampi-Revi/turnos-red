@@ -289,7 +289,7 @@ src/
 ├── services/pacienteService.ts
 ├── models/Paciente.ts
 ├── schemas/paciente.schema.ts          # Zod (alineado a /turnos y /medicos)
-└── data/pacientes.json                 # o src/data/pacientes.json
+└── data/pacientes.json                 # src/data/pacientes.json
 ```
 
 Flujo:

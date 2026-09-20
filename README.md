@@ -60,8 +60,8 @@ npx newman run turnos-red.postman_collection.json
 | Variable               | Descripción                            | Ejemplo                              |
 |------------------------|----------------------------------------|--------------------------------------|
 | `PORT`                 | Puerto HTTP del servidor               | `4000`                               |
-| `APPOINTMENTS_PATH`    | Archivo JSON de turnos                 | `./data/turnos.json`                 |
-| `DOCTORS_PATH`         | Archivo JSON de médicos                | `./data/medicos.json`                |
+| `APPOINTMENTS_PATH`    | Archivo JSON de turnos                 | `./src/data/turnos.json`             |
+| `DOCTORS_PATH`         | Archivo JSON de médicos                | `./src/data/medicos.json`            |
 | `ESPECIALIDADES_PATH`  | Archivo JSON de especialidades         | `./src/data/especialidades.json`     |
 | `PROFESIONALES_PATH`   | Archivo JSON de profesionales          | `./src/data/profesionales.json`      |
 
@@ -89,7 +89,7 @@ routes → controllers → services → models / data
 | `controllers/` | Validaciones, códigos HTTP, respuestas |
 | `services/` | Lógica de negocio y persistencia en memoria/JSON |
 | `models/` | Tipos de dominio |
-| `data/` / `src/data/` | Persistencia ficticia en archivos JSON |
+| `src/data/` | Persistencia ficticia en archivos JSON |
 | `schemas/` | Validación Zod (recursos de la actividad anterior) |
 | `middleware/` | Zod validate, errorHandler, routeHandler |
 
@@ -430,9 +430,6 @@ Así el repositorio público no sube artefactos generados ni variables sensibles
 
 ```text
 turnos-red/
-├── data/
-│   ├── turnos.json
-│   └── medicos.json
 ├── public/
 │   └── index.html
 ├── pacientes-turnos.md                 # Mockup Pacientes / Turnos
@@ -450,6 +447,8 @@ turnos-red/
     │   ├── especialidadesController.ts
     │   └── profesionalesController.ts
     ├── data/
+    │   ├── turnos.json
+    │   ├── medicos.json
     │   ├── especialidades.json
     │   └── profesionales.json
     ├── errors/
