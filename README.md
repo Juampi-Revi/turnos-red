@@ -4,12 +4,24 @@ Backend para centralizar la gestión de turnos de centros de atención ambulator
 
 Stack: **Node.js (LTS) + TypeScript + Express + Zod + Socket.IO**.
 
-El proyecto evoluciona en dos etapas:
+El proyecto evoluciona en etapas acumulativas:
 
-1. **Actividad anterior:** API REST de `/turnos` y `/medicos` con validación Zod, errores estandarizados, filtros por query params, EventEmitter y Socket.IO.
-2. **Actividad 2 — Controllers Async:** refactor hacia controladores asincrónicos con patrón `status` + `try/catch` + `throw new Error(...)`, recursos `/especialidades` y `/profesionales`, y `generalController` (bienvenida + 404).
+1. **API REST base:** `/turnos` y `/medicos` con validación Zod, errores estandarizados, filtros, EventEmitter y Socket.IO.
+2. **Controllers Async:** `/especialidades`, `/profesionales` y `generalController` (bienvenida + 404) con patrón `async` / `status` / `throw new Error`.
+3. **Mockup Pacientes y Turnos:** propuesta conceptual para Frontend en [`pacientes-turnos.md`](./pacientes-turnos.md) (**no implementa** todavía el CRUD de `/pacientes`).
 
-Ambas capas **conviven** en el mismo repositorio sin reemplazarse.
+Las capas **conviven** en el mismo repositorio sin reemplazarse.
+
+## Índice rápido
+
+| Sección | Contenido |
+|---------|-----------|
+| [Instalación](#instalación-y-ejecución) | `npm install` / `npm run dev` |
+| [Arquitectura](#arquitectura) | Capas Clean Architecture |
+| [API implementada](#documentación-rest--api-implementada) | Endpoints reales |
+| [Mockup Pacientes/Turnos](#mockup-pacientes-y-turnos) | Propuesta para Frontend |
+| [Postman y `baseUrl`](#postman) | Variables de colección / environment |
+| [`.gitignore`](#gitignore) | Archivos excluidos del repo |
 
 ## Requisitos previos
 
@@ -85,13 +97,37 @@ Persistencia: **ficticia** (arrays en memoria + JSON). Los cambios duran mientra
 
 ---
 
-## Recursos existentes (actividad anterior)
+## Documentación REST — API implementada
 
-| Recurso | Ruta base | Notas |
-|---------|-----------|-------|
-| Turnos | `/turnos` | Zod + filtros + Socket.IO en escrituras |
-| Médicos | `/medicos` | Zod + filtros |
-| Health | `/health` | Estado del servicio |
+A continuación se documenta la API **realmente disponible** al ejecutar `npm run dev`.
+
+### Recursos disponibles
+
+| Recurso | Ruta base | Estado |
+|---------|-----------|--------|
+| Bienvenida | `/` | Implementado |
+| Health | `/health` | Implementado |
+| Turnos | `/turnos` | Implementado |
+| Médicos | `/medicos` | Implementado |
+| Especialidades | `/especialidades` | Implementado |
+| Profesionales | `/profesionales` | Implementado |
+| Pacientes | `/pacientes` | **Propuesta** → ver [`pacientes-turnos.md`](./pacientes-turnos.md) |
+
+### `GET /` — Bienvenida
+
+| Ítem | Detalle |
+|------|---------|
+| Método / Path | `GET /` |
+| Descripción | Mensaje de bienvenida y mapa de endpoints |
+| Respuesta 200 | `{ status, message, service, version, endpoints }` |
+
+### `GET /health`
+
+| Ítem | Detalle |
+|------|---------|
+| Método / Path | `GET /health` |
+| Descripción | Healthcheck del servicio |
+| Respuesta 200 | `{ status: "ok", service: "turnos-red" }` |
 
 ### Formato de errores (turnos / médicos — Zod / AppError)
 
@@ -110,13 +146,13 @@ Códigos comunes: `VALIDATION_ERROR`, `NOT_FOUND`, `INTERNAL_ERROR`.
 
 ### Endpoints — Turnos (`/turnos`)
 
-| Método   | Ruta           | Descripción        | Status típicos        |
-|----------|----------------|--------------------|-----------------------|
-| `GET`    | `/turnos`      | Listar turnos      | 200, 400, 500         |
-| `GET`    | `/turnos/:id`  | Turno por ID       | 200, 400, 404, 500    |
-| `POST`   | `/turnos`      | Crear turno        | 201, 400, 404, 500    |
-| `PUT`    | `/turnos/:id`  | Actualizar turno   | 200, 400, 404, 500    |
-| `DELETE` | `/turnos/:id`  | Eliminar turno     | 204, 400, 404, 500    |
+| Método   | Ruta           | Descripción        | Params | Query | Body | Status típicos        |
+|----------|----------------|--------------------|--------|-------|------|-----------------------|
+| `GET`    | `/turnos`      | Listar turnos      | — | `especialidad`, `fecha`, `medicoId` | — | 200, 400, 500         |
+| `GET`    | `/turnos/:id`  | Turno por ID       | `id` | — | — | 200, 400, 404, 500    |
+| `POST`   | `/turnos`      | Crear turno        | — | — | JSON turno | 201, 400, 404, 500    |
+| `PUT`    | `/turnos/:id`  | Actualizar turno   | `id` | — | JSON parcial | 200, 400, 404, 500    |
+| `DELETE` | `/turnos/:id`  | Eliminar turno     | `id` | — | — | 204, 400, 404, 500    |
 
 #### Query params — `GET /turnos`
 
@@ -126,7 +162,7 @@ Códigos comunes: `VALIDATION_ERROR`, `NOT_FOUND`, `INTERNAL_ERROR`.
 | `fecha`        | `14/08/2026`         | Filtra por fecha (DD/MM/YYYY)  |
 | `medicoId`     | `1`                  | Filtra por médico asignado     |
 
-Ejemplo: `/turnos?especialidad=Pediatria&fecha=14/08/2026&medicoId=1`
+Ejemplo: `{{baseUrl}}/turnos?especialidad=Pediatria&fecha=14/08/2026&medicoId=1`
 
 #### Body ejemplo — `POST /turnos`
 
@@ -145,22 +181,22 @@ Ejemplo: `/turnos?especialidad=Pediatria&fecha=14/08/2026&medicoId=1`
 
 ### Endpoints — Médicos (`/medicos`)
 
-| Método   | Ruta            | Descripción         | Status típicos        |
-|----------|-----------------|---------------------|-----------------------|
-| `GET`    | `/medicos`      | Listar médicos      | 200, 400, 500         |
-| `GET`    | `/medicos/:id`  | Médico por ID       | 200, 400, 404, 500    |
-| `POST`   | `/medicos`      | Registrar médico    | 201, 400, 500         |
-| `PUT`    | `/medicos/:id`  | Actualizar médico   | 200, 400, 404, 500    |
-| `DELETE` | `/medicos/:id`  | Dar de baja médico  | 204, 400, 404, 500    |
+| Método   | Ruta            | Descripción         | Params | Query | Body | Status típicos        |
+|----------|-----------------|---------------------|--------|-------|------|-----------------------|
+| `GET`    | `/medicos`      | Listar médicos      | — | `especialidad`, `disponible` | — | 200, 400, 500         |
+| `GET`    | `/medicos/:id`  | Médico por ID       | `id` | — | — | 200, 400, 404, 500    |
+| `POST`   | `/medicos`      | Registrar médico    | — | — | JSON médico | 201, 400, 500         |
+| `PUT`    | `/medicos/:id`  | Actualizar médico   | `id` | — | JSON parcial | 200, 400, 404, 500    |
+| `DELETE` | `/medicos/:id`  | Dar de baja médico  | `id` | — | — | 204, 400, 404, 500    |
 
 #### Query params — `GET /medicos`
 
 | Parámetro      | Ejemplo        | Descripción              |
 |----------------|----------------|--------------------------|
 | `especialidad` | `Odontologia`  | Filtra por especialidad  |
-| `disponible`   | `true`         | Filtra por disponibilidad|
+| `disponible`   | `true`         | Filtrar por disponibilidad|
 
-Ejemplo: `/medicos?especialidad=Odontologia&disponible=false`
+Ejemplo: `{{baseUrl}}/medicos?especialidad=Odontologia&disponible=false`
 
 #### Body ejemplo — `POST /medicos`
 
@@ -187,9 +223,27 @@ Abrí `http://localhost:4000/index.html` y dispará POST/PUT/DELETE sobre `/turn
 
 ---
 
+## Mockup Pacientes y Turnos
+
+La propuesta de diseño para el módulo de **Pacientes** y la evolución de **Turnos** (hacia `pacienteId`) está documentada en:
+
+**[`pacientes-turnos.md`](./pacientes-turnos.md)**
+
+Incluye:
+
+- modelo conceptual de Paciente (`dni`, nombre, apellido, fecha de nacimiento, contacto);
+- modelo de Turno actual vs propuesto;
+- endpoints REST sugeridos (`/pacientes`, evolución de `/turnos`);
+- ejemplos TypeScript y JSON;
+- capas Clean Architecture previstas.
+
+> `/pacientes` **no está implementado** en el código. `/turnos` **sí** está implementado con el contrato actual (`paciente` + `documento` embebidos).
+
+---
+
 ## Actividad 2 — Controllers Async
 
-### Recursos nuevos
+### Recursos
 
 | Recurso | Ruta base | Descripción |
 |---------|-----------|-------------|
@@ -284,25 +338,52 @@ Los handlers de `especialidadesController` y `profesionalesController` siguen es
 
 ## Postman
 
-Archivo: **`turnos-red.postman_collection.json`**
+### Archivos
 
-### Contenido de la colección
+| Archivo | Uso |
+|---------|-----|
+| `turnos-red.postman_collection.json` | Colección completa (tests + examples) |
+| `turnos-red.postman_environment.json` | Environment **TurnosRed Local** con `baseUrl` |
+
+### Variable `baseUrl`
+
+La colección y el environment definen:
+
+| Variable | Valor típico |
+|----------|--------------|
+| `baseUrl` | `http://localhost:4000` |
+
+Todas las peticiones usan la sintaxis:
+
+```text
+{{baseUrl}}/turnos
+{{baseUrl}}/medicos
+{{baseUrl}}/especialidades
+{{baseUrl}}/profesionales
+```
+
+**Cómo usarlo en Postman**
+
+1. Importar `turnos-red.postman_collection.json`
+2. (Opcional) Importar `turnos-red.postman_environment.json` y seleccionarlo arriba a la derecha
+3. Verificar en **Variables** de la colección (o del environment) que `baseUrl` apunte a tu servidor
+4. Ejecutar requests: la URL se resuelve dinámicamente
+
+### Carpetas de la colección
 
 | Carpeta | Origen |
 |---------|--------|
-| Turnos - Happy Path | Actividad anterior |
-| Medicos - Happy Path | Actividad anterior |
-| Query Filters | Actividad anterior |
-| Errors | Actividad anterior (Zod 400 / 404) |
-| **Actividad 2 - Controllers Async** | Nueva actividad (bienvenida, especialidades, profesionales, unhappy paths) |
+| Turnos - Happy Path | API turnos |
+| Medicos - Happy Path | API médicos |
+| Query Filters | Filtros query |
+| Errors | Zod 400 / 404 |
+| Actividad 2 - Controllers Async | Bienvenida, especialidades, profesionales |
 
-Variables de colección: `baseUrl`, `doctorId`, `appointmentId`, `especialidadSeedId`, `profesionalSeedId`, `especialidadId`, `profesionalId`.
+Otras variables: `doctorId`, `appointmentId`, `especialidadSeedId`, `profesionalSeedId`, `especialidadId`, `profesionalId`.
 
-La colección incluye tests automatizados y **Saved Responses** (útil para Mock Server de la actividad anterior).
+La colección incluye tests automatizados y **Saved Responses** (útil para Mock Server).
 
 ### Resultado de ejecución (Newman)
-
-Última corrida completa de la colección:
 
 | Métrica | Valor |
 |---------|-------|
@@ -311,11 +392,7 @@ La colección incluye tests automatizados y **Saved Responses** (útil para Mock
 | PASS | **68** |
 | FAIL | **0** |
 
-Incluye happy path, unhappy path (400/404) y la carpeta **Actividad 2 - Controllers Async**.
-
 ### Newman (devDependency)
-
-`newman` está instalado como **devDependency** para ejecutar la colección desde la terminal:
 
 ```bash
 # Terminal 1
@@ -324,6 +401,28 @@ npm run dev
 # Terminal 2
 npx newman run turnos-red.postman_collection.json
 ```
+
+Con environment:
+
+```bash
+npx newman run turnos-red.postman_collection.json -e turnos-red.postman_environment.json
+```
+
+---
+
+## `.gitignore`
+
+El archivo `.gitignore` en la raíz excluye (entre otros):
+
+| Entrada | Motivo |
+|---------|--------|
+| `node_modules/` | Dependencias instaladas (no versionar) |
+| `dist/` | Salida compilada de TypeScript |
+| `.env` | Secretos / configuración local |
+| `*.log` | Logs temporales |
+| `.DS_Store` | Metadatos del sistema |
+
+Así el repositorio público no sube artefactos generados ni variables sensibles. La plantilla versionada es `.env.example`.
 
 ---
 
@@ -335,8 +434,11 @@ turnos-red/
 │   ├── turnos.json
 │   └── medicos.json
 ├── public/
-│   └── index.html              # Monitor Socket.IO (/index.html)
+│   └── index.html
+├── pacientes-turnos.md                 # Mockup Pacientes / Turnos
 ├── turnos-red.postman_collection.json
+├── turnos-red.postman_environment.json # baseUrl local
+├── .gitignore
 └── src/
     ├── index.ts
     ├── app.ts
@@ -344,10 +446,10 @@ turnos-red/
     ├── controllers/
     │   ├── appointmentController.ts
     │   ├── doctorController.ts
-    │   ├── generalController.ts          # Actividad 2
-    │   ├── especialidadesController.ts   # Actividad 2
-    │   └── profesionalesController.ts    # Actividad 2
-    ├── data/                             # Actividad 2
+    │   ├── generalController.ts
+    │   ├── especialidadesController.ts
+    │   └── profesionalesController.ts
+    ├── data/
     │   ├── especialidades.json
     │   └── profesionales.json
     ├── errors/
@@ -355,8 +457,8 @@ turnos-red/
     ├── models/
     │   ├── Appointment.ts
     │   ├── Doctor.ts
-    │   ├── Especialidad.ts               # Actividad 2
-    │   └── Profesional.ts                # Actividad 2
+    │   ├── Especialidad.ts
+    │   └── Profesional.ts
     ├── routes/
     ├── schemas/
     ├── services/
@@ -374,6 +476,7 @@ turnos-red/
 | Controllers async (Actividad 2) | Cursor / Claude | Controllers async con status, try/catch y throw new Error para especialidades/profesionales | Handlers con patrón pedagógico | Convivencia con /turnos y /medicos; 404 desde generalController |
 | Postman Controllers Async | Cursor / Claude | Carpeta Postman para bienvenida, CRUD y unhappy paths | Requests + scripts de test | Variables dinámicas `especialidadId` / `profesionalId`; ejecución Newman 68/68 |
 | README Actividad 2 | Cursor / Claude | Actualizar README con endpoints Controllers Async y resultados Newman | Estructura markdown base | Se conservó documentación de turnos/médicos/Zod/Socket.IO |
+| Mockup Pacientes/Turnos | Cursor / Claude | Propuesta conceptual pacientes-turnos.md + README REST + Postman baseUrl | Documento de diseño + docs | Sin implementar `/pacientes`; se documentó contrato actual vs propuesto |
 
 ## Depuración en VS Code / Cursor
 

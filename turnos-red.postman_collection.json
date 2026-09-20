@@ -2,7 +2,7 @@
   "info": {
     "name": "TurnosRed API",
     "_postman_id": "turnos-red-collection",
-    "description": "Colección TurnosRed: Actividad anterior (turnos/médicos/Zod) + Actividad 2 Controllers Async (especialidades/profesionales/general).",
+    "description": "Colección TurnosRed (turnos, médicos, especialidades, profesionales).\n\nVariable de colección `baseUrl` = `http://localhost:4000`.\nTodas las URLs usan `{{baseUrl}}/...`.\n\nOpcional: importar también `turnos-red.postman_environment.json` (environment TurnosRed Local).",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
