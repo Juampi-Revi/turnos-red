@@ -1,0 +1,30 @@
+[
+  {
+    "id": 1,
+    "nombre": "Dra. Ana Martínez",
+    "documento": "30111222",
+    "especialidadId": 2,
+    "disponible": true
+  },
+  {
+    "id": 2,
+    "nombre": "Dr. Carlos Ruiz",
+    "documento": "28456321",
+    "especialidadId": 1,
+    "disponible": true
+  },
+  {
+    "id": 3,
+    "nombre": "Dra. Lucía Gómez",
+    "documento": "40111222",
+    "especialidadId": 3,
+    "disponible": false
+  },
+  {
+    "id": 4,
+    "nombre": "Dr. Pedro Fernández",
+    "documento": "25999888",
+    "especialidadId": 4,
+    "disponible": true
+  }
+]

@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "nombre": "Clínica médica",
+    "activa": true,
+    "descripcion": "Atención general ambulatoria"
+  },
+  {
+    "id": 2,
+    "nombre": "Pediatría",
+    "activa": true,
+    "descripcion": "Atención pediátrica"
+  },
+  {
+    "id": 3,
+    "nombre": "Odontología",
+    "activa": true,
+    "descripcion": "Salud dental"
+  },
+  {
+    "id": 4,
+    "nombre": "Nutrición",
+    "activa": true,
+    "descripcion": "Consulta nutricional"
+  }
+]

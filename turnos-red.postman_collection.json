@@ -2,7 +2,7 @@
   "info": {
     "name": "TurnosRed API",
     "_postman_id": "turnos-red-collection",
-    "description": "Colección Actividad 2 — TurnosRed con tests automatizados y ejemplos para Mock Server.",
+    "description": "Colección TurnosRed: Actividad anterior (turnos/médicos/Zod) + Actividad 2 Controllers Async (especialidades/profesionales/general).",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
@@ -17,6 +17,22 @@
     {
       "key": "appointmentId",
       "value": "102"
+    },
+    {
+      "key": "especialidadSeedId",
+      "value": "1"
+    },
+    {
+      "key": "profesionalSeedId",
+      "value": "1"
+    },
+    {
+      "key": "especialidadId",
+      "value": ""
+    },
+    {
+      "key": "profesionalId",
+      "value": ""
     }
   ],
   "item": [
@@ -1036,6 +1052,818 @@
                 }
               ],
               "_postman_previewlanguage": "json"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Actividad 2 - Controllers Async",
+      "item": [
+        {
+          "name": "General",
+          "item": [
+            {
+              "name": "GET / — Bienvenida",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": []
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                      "pm.test('JSON response', () => {",
+                      "  pm.response.to.be.json;",
+                      "  const json = pm.response.json();",
+                      "  pm.expect(json).to.be.an('object');",
+                      "});",
+                      "pm.test('Welcome message', () => {",
+                      "  const json = pm.response.json();",
+                      "  pm.expect(json.message).to.be.a('string');",
+                      "  pm.expect(json.message.toLowerCase()).to.include('bienvenido');",
+                      "});"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "GET /ruta-inexistente — 404 generalController",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/ruta-inexistente",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "ruta-inexistente"
+                  ]
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('Status 404', () => pm.response.to.have.status(404));",
+                      "pm.test('JSON with status and message', () => {",
+                      "  const json = pm.response.json();",
+                      "  pm.expect(json.status).to.eql(404);",
+                      "  pm.expect(json.message).to.be.a('string');",
+                      "  pm.expect(json.message.toLowerCase()).to.include('ruta');",
+                      "});"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Especialidades - Happy Path",
+          "item": [
+            {
+              "name": "GET /especialidades",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/especialidades",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "especialidades"
+                  ]
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                      "pm.test('Has data array', () => {",
+                      "  const json = pm.response.json();",
+                      "  pm.expect(json.status).to.eql(200);",
+                      "  pm.expect(json.data).to.be.an('array');",
+                      "  pm.expect(json.total).to.be.a('number');",
+                      "});"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "GET /especialidades/:id",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/especialidades/{{especialidadSeedId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "especialidades",
+                    "{{especialidadSeedId}}"
+                  ]
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                      "pm.test('Has especialidad data', () => {",
+                      "  const json = pm.response.json();",
+                      "  pm.expect(json.status).to.eql(200);",
+                      "  pm.expect(json.data).to.be.an('object');",
+                      "  pm.expect(json.data.id).to.eql(Number(pm.collectionVariables.get('especialidadSeedId')));",
+                      "  pm.expect(json.data.nombre).to.be.a('string');",
+                      "});"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "POST /especialidades",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/especialidades",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "especialidades"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nombre\": \"Especialidad Test Postman\",\n  \"descripcion\": \"Creada por colección Actividad 2 Controllers\",\n  \"activa\": true\n}"
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('Status 201', () => pm.response.to.have.status(201));",
+                      "pm.test('Especialidad creada', () => {",
+                      "  const json = pm.response.json();",
+                      "  pm.expect(json.status).to.eql(201);",
+                      "  pm.expect(json.data).to.be.an('object');",
+                      "  pm.expect(json.data.id).to.be.a('number');",
+                      "  pm.expect(json.data.nombre).to.eql('Especialidad Test Postman');",
+                      "  pm.collectionVariables.set('especialidadId', String(json.data.id));",
+                      "});"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "PUT /especialidades/:id",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/especialidades/{{especialidadId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "especialidades",
+                    "{{especialidadId}}"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"descripcion\": \"Actualizada por Postman\",\n  \"activa\": false\n}"
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                      "pm.test('Especialidad actualizada', () => {",
+                      "  const json = pm.response.json();",
+                      "  pm.expect(json.status).to.eql(200);",
+                      "  pm.expect(json.data.activa).to.eql(false);",
+                      "  pm.expect(json.data.descripcion).to.eql('Actualizada por Postman');",
+                      "});"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "DELETE /especialidades/:id",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/especialidades/{{especialidadId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "especialidades",
+                    "{{especialidadId}}"
+                  ]
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                      "pm.test('Especialidad eliminada', () => {",
+                      "  const json = pm.response.json();",
+                      "  pm.expect(json.status).to.eql(200);",
+                      "  pm.expect(json.message).to.be.a('string');",
+                      "});"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Especialidades - Unhappy Path",
+          "item": [
+            {
+              "name": "POST /especialidades — body incompleto 400",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/especialidades",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "especialidades"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}"
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('Status 400', () => pm.response.to.have.status(400));",
+                      "pm.test('Error JSON status/message', () => {",
+                      "  const json = pm.response.json();",
+                      "  pm.expect(json.status).to.eql(400);",
+                      "  pm.expect(json.message).to.be.a('string').and.not.empty;",
+                      "});"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "GET /especialidades/:id — inexistente 404",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/especialidades/99999",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "especialidades",
+                    "99999"
+                  ]
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('Status 404', () => pm.response.to.have.status(404));",
+                      "pm.test('Error JSON status/message', () => {",
+                      "  const json = pm.response.json();",
+                      "  pm.expect(json.status).to.eql(404);",
+                      "  pm.expect(json.message).to.be.a('string').and.not.empty;",
+                      "});"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "PUT /especialidades/:id — inexistente 404",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/especialidades/99999",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "especialidades",
+                    "99999"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nombre\": \"No existe\",\n  \"activa\": true\n}"
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('Status 404', () => pm.response.to.have.status(404));",
+                      "pm.test('Error JSON status/message', () => {",
+                      "  const json = pm.response.json();",
+                      "  pm.expect(json.status).to.eql(404);",
+                      "  pm.expect(json.message).to.be.a('string').and.not.empty;",
+                      "});"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "DELETE /especialidades/:id — inexistente 404",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/especialidades/99999",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "especialidades",
+                    "99999"
+                  ]
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('Status 404', () => pm.response.to.have.status(404));",
+                      "pm.test('Error JSON status/message', () => {",
+                      "  const json = pm.response.json();",
+                      "  pm.expect(json.status).to.eql(404);",
+                      "  pm.expect(json.message).to.be.a('string').and.not.empty;",
+                      "});"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Profesionales - Happy Path",
+          "item": [
+            {
+              "name": "GET /profesionales",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/profesionales",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "profesionales"
+                  ]
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                      "pm.test('Has data array', () => {",
+                      "  const json = pm.response.json();",
+                      "  pm.expect(json.status).to.eql(200);",
+                      "  pm.expect(json.data).to.be.an('array');",
+                      "  pm.expect(json.total).to.be.a('number');",
+                      "});"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "GET /profesionales/:id",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/profesionales/{{profesionalSeedId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "profesionales",
+                    "{{profesionalSeedId}}"
+                  ]
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                      "pm.test('Has profesional data', () => {",
+                      "  const json = pm.response.json();",
+                      "  pm.expect(json.status).to.eql(200);",
+                      "  pm.expect(json.data).to.be.an('object');",
+                      "  pm.expect(json.data.id).to.eql(Number(pm.collectionVariables.get('profesionalSeedId')));",
+                      "  pm.expect(json.data.especialidadId).to.be.a('number');",
+                      "});"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "POST /profesionales",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/profesionales",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "profesionales"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nombre\": \"Dr. Test Postman\",\n  \"documento\": \"77001122\",\n  \"especialidadId\": 1,\n  \"disponible\": true\n}"
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('Status 201', () => pm.response.to.have.status(201));",
+                      "pm.test('Profesional creado', () => {",
+                      "  const json = pm.response.json();",
+                      "  pm.expect(json.status).to.eql(201);",
+                      "  pm.expect(json.data).to.be.an('object');",
+                      "  pm.expect(json.data.id).to.be.a('number');",
+                      "  pm.expect(json.data.documento).to.eql('77001122');",
+                      "  pm.collectionVariables.set('profesionalId', String(json.data.id));",
+                      "});"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "PUT /profesionales/:id",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/profesionales/{{profesionalId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "profesionales",
+                    "{{profesionalId}}"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"disponible\": false\n}"
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                      "pm.test('Profesional actualizado', () => {",
+                      "  const json = pm.response.json();",
+                      "  pm.expect(json.status).to.eql(200);",
+                      "  pm.expect(json.data.disponible).to.eql(false);",
+                      "});"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "DELETE /profesionales/:id",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/profesionales/{{profesionalId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "profesionales",
+                    "{{profesionalId}}"
+                  ]
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                      "pm.test('Profesional eliminado', () => {",
+                      "  const json = pm.response.json();",
+                      "  pm.expect(json.status).to.eql(200);",
+                      "  pm.expect(json.message).to.be.a('string');",
+                      "});"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Profesionales - Unhappy Path",
+          "item": [
+            {
+              "name": "POST /profesionales — body incompleto 400",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/profesionales",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "profesionales"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nombre\": \"Sin datos\"\n}"
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('Status 400', () => pm.response.to.have.status(400));",
+                      "pm.test('Error JSON status/message', () => {",
+                      "  const json = pm.response.json();",
+                      "  pm.expect(json.status).to.eql(400);",
+                      "  pm.expect(json.message).to.be.a('string').and.not.empty;",
+                      "});"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "POST /profesionales — tipos inválidos 400",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/profesionales",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "profesionales"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nombre\": \"\",\n  \"documento\": \"\",\n  \"especialidadId\": \"abc\",\n  \"disponible\": \"quizas\"\n}"
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('Status 400', () => pm.response.to.have.status(400));",
+                      "pm.test('Error JSON status/message', () => {",
+                      "  const json = pm.response.json();",
+                      "  pm.expect(json.status).to.eql(400);",
+                      "  pm.expect(json.message).to.be.a('string').and.not.empty;",
+                      "});"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "GET /profesionales/:id — inexistente 404",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/profesionales/99999",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "profesionales",
+                    "99999"
+                  ]
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('Status 404', () => pm.response.to.have.status(404));",
+                      "pm.test('Error JSON status/message', () => {",
+                      "  const json = pm.response.json();",
+                      "  pm.expect(json.status).to.eql(404);",
+                      "  pm.expect(json.message).to.be.a('string').and.not.empty;",
+                      "});"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "PUT /profesionales/:id — inexistente 404",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/profesionales/99999",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "profesionales",
+                    "99999"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"disponible\": true\n}"
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('Status 404', () => pm.response.to.have.status(404));",
+                      "pm.test('Error JSON status/message', () => {",
+                      "  const json = pm.response.json();",
+                      "  pm.expect(json.status).to.eql(404);",
+                      "  pm.expect(json.message).to.be.a('string').and.not.empty;",
+                      "});"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "DELETE /profesionales/:id — inexistente 404",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/profesionales/99999",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "profesionales",
+                    "99999"
+                  ]
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('Status 404', () => pm.response.to.have.status(404));",
+                      "pm.test('Error JSON status/message', () => {",
+                      "  const json = pm.response.json();",
+                      "  pm.expect(json.status).to.eql(404);",
+                      "  pm.expect(json.message).to.be.a('string').and.not.empty;",
+                      "});"
+                    ]
+                  }
+                }
+              ]
             }
           ]
         }

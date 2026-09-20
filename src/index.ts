@@ -5,11 +5,15 @@ import { env } from './config/env.js';
 import type { Appointment } from './models/Appointment.js';
 import { loadAppointments } from './services/appointmentService.js';
 import { loadDoctors } from './services/doctorService.js';
+import { loadEspecialidades } from './services/especialidadesService.js';
+import { loadProfesionales } from './services/profesionalesService.js';
 import { InternalEvents, eventBus } from './services/eventBus.js';
 
 async function bootstrap(): Promise<void> {
   await loadDoctors();
   await loadAppointments();
+  await loadEspecialidades();
+  await loadProfesionales();
 
   const app = createApp();
   const httpServer = http.createServer(app);
@@ -42,6 +46,8 @@ async function bootstrap(): Promise<void> {
     console.log(`[TurnosRed] Cliente realtime: http://localhost:${env.port}/`);
     console.log(`[TurnosRed] Turnos: ${env.appointmentsPath}`);
     console.log(`[TurnosRed] Médicos: ${env.doctorsPath}`);
+    console.log(`[TurnosRed] Especialidades: ${env.especialidadesPath}`);
+    console.log(`[TurnosRed] Profesionales: ${env.profesionalesPath}`);
   });
 }
 

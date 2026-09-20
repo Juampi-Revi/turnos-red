@@ -31,5 +31,11 @@ export const env = {
   port,
   appointmentsPath: resolveDataPath(requireEnv('APPOINTMENTS_PATH')),
   doctorsPath: resolveDataPath(requireEnv('DOCTORS_PATH')),
+  especialidadesPath: resolveDataPath(
+    process.env.ESPECIALIDADES_PATH?.trim() || './src/data/especialidades.json',
+  ),
+  profesionalesPath: resolveDataPath(
+    process.env.PROFESIONALES_PATH?.trim() || './src/data/profesionales.json',
+  ),
   projectRoot,
 };
